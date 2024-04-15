@@ -15,6 +15,7 @@ import java.util.Optional;
  */
 public record RestBean<T> (long id, int code, T data, String message) {
     public static <T> RestBean<T> success(T data){
+        //OK 请求成功。一般用于GET与POST请求
         return new RestBean<>(requestId(), 200, data, "请求成功");
     }
 
@@ -23,10 +24,12 @@ public record RestBean<T> (long id, int code, T data, String message) {
     }
 
     public static <T> RestBean<T> forbidden(String message){
+        //Forbidden 服务器理解请求客户端的请求，但是拒绝执行此请求
         return failure(403, message);
     }
 
     public static <T> RestBean<T> unauthorized(String message){
+        //Unauthorized 请求要求用户的身份认证
         return failure(401, message);
     }
 

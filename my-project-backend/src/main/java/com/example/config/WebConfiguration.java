@@ -11,9 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
-
+    //这里将BCryptPasswordEncoder直接注册为Bean，Security会自动进行选择
     @Bean
     public PasswordEncoder passwordEncoder(){
+        //官方的BCrypt加密工具
         return new BCryptPasswordEncoder();
     }
 }

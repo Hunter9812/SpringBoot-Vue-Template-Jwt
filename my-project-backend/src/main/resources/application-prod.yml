@@ -1,24 +1,36 @@
 #生产环境配置
 server:
-  port: 80
+  port: 8080
 springdoc:
   api-docs:
-    enabled: false
+    enabled: false # 生产环境关闭swagger文档
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 spring:
   mail:
-    host: smtp.163.com
-    username: javastudy111@163.com
-    password: VKQFYZMUSUZGSGEG
+    host: smtp.qq.com
+    username: xxxxxxxx@qq.com
+    password: xxxxxxxxxxxxxxxx
+    protocol: smtps
+    properties:
+      mail:
+        stmp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    port: 465
+  data:
+    redis:
+      host: app_redis
   rabbitmq:
-    addresses: localhost
+    addresses: app_rabbitmq
     username: admin
     password: admin
     virtual-host: /
   datasource:
-    url: jdbc:mysql://localhost:3306/test
+    url: jdbc:mysql://app_mysql:3306/test
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver

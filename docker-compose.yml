@@ -1,0 +1,56 @@
+version: "3"
+services:
+  spring-boot-app:
+    container_name: app_springboot
+    build: . #build表示使用构建的镜像，.表示使用当前目录下的Dockerfile进行构建
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - rabbitmq
+      - mysql
+    restart: always #这里配置容器停止后自动重启
+    environment:
+      SPRING_RABBITMQ_HOST: app_rabbitmq
+
+  redis:
+    container_name: app_redis
+    image: redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    container_name: app_rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: /
+      # 可以添加其他需要的配置环境变量
+    volumes:
+      - ./docker-data/rabbitmq-data:/var/lib/rabbitmq  # 持久化存储 RabbitMQ 数据
+
+  mysql:
+    container_name: app_mysql
+    image: mysql/mysql-server:latest
+    environment:
+      MYSQL_ROOT_HOST: '%'          #登陆的主机，这里直接配置为'%'
+      MYSQL_ROOT_PASSWORD: '123456' #MySQL root账号的密码
+      MYSQL_DATABASE: 'test'        #在启动时自动创建的数据库
+      TZ: 'Asia/Shanghai'           #时区
+    ports:
+      - "3306:3306"
+    command: [ "--init-file", "/docker-entrypoint-initdb.d/init.sql" ]
+    volumes:
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql
+
+  nginx:
+    container_name: app_nginx
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./my-project-frontend/dist:/usr/share/nginx/html

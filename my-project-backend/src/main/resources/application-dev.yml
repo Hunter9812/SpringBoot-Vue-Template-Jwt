@@ -5,9 +5,18 @@ springdoc:
     operations-sorter: alpha
 spring:
   mail:
-    host: smtp.163.com
-    username: javastudy111@163.com
-    password: VKQFYZMUSUZGSGEG
+    host: smtp.qq.com
+    username: xxxxxxxx@qq.com
+    password: xxxxxxxxxxxxxxxx
+    protocol: smtps
+    properties:
+      mail:
+        stmp:
+          auth: true #设置是否需要验证，如果为true，那么用户名和密码是必须的，如果是false，可以不设置用户名和密码，这也得看对接平台是否支持无密码登陆
+          starttls: #是对纯文本通信协议的扩展，它提供一种方式将纯文本连接升级为加密连接（TLS或SSL），而不是另外使用一个端口作加密通道
+            enable: true
+            required: true
+    port: 465
   rabbitmq:
     addresses: localhost
     username: admin

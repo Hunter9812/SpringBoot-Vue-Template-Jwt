@@ -52,26 +52,31 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                //以下是验证请求拦截和放行配置
                 .authorizeHttpRequests(conf -> conf
-                        .requestMatchers("/api/auth/**", "/error").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .anyRequest().hasAnyRole(Const.ROLE_DEFAULT)
+                        .requestMatchers("/api/auth/**", "/error").permitAll() //放行认证接口
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() //放行Swagger的Web API接口
+                        .anyRequest().hasAnyRole(Const.ROLE_DEFAULT) //允许ROLE_DEFAULT角色通行
                 )
+                //以下是表单登录相关配置
                 .formLogin(conf -> conf
                         .loginProcessingUrl("/api/auth/login")
                         .failureHandler(this::handleProcess)
                         .successHandler(this::handleProcess)
                         .permitAll()
                 )
+                //以下是退出登录相关配置
                 .logout(conf -> conf
                         .logoutUrl("/api/auth/logout")
                         .logoutSuccessHandler(this::onLogoutSuccess)
                 )
+                //以下是异常处理相关配置
                 .exceptionHandling(conf -> conf
                         .accessDeniedHandler(this::handleProcess)
                         .authenticationEntryPoint(this::handleProcess)
                 )
-                .csrf(AbstractHttpConfigurer::disable)
+                //以下是csrf相关配置
+                .csrf(AbstractHttpConfigurer::disable) //直接关闭全部的csrf校验，一步到位
                 .sessionManagement(conf -> conf
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(requestLogFilter, UsernamePasswordAuthenticationFilter.class)
